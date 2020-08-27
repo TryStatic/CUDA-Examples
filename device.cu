@@ -4,6 +4,10 @@
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
 
+
+/// <summary>
+/// Returns the amount of CUDA capable devices or -1 on error.
+/// </summary>
 int device_info::get_cuda_capable_devices_count()
 {
 	int device_count = 0;
@@ -16,6 +20,10 @@ int device_info::get_cuda_capable_devices_count()
 	return device_count;
 }
 
+
+/// <summary>
+/// Prints CUDA Capable devices and info to console
+/// </summary>
 void device_info::print_devices()
 {
 	int device_count;
