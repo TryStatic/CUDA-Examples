@@ -14,5 +14,13 @@
     <ClInclude Include="main.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="device.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="device.cu">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
