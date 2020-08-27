@@ -4,6 +4,18 @@
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
 
+int device_info::get_cuda_capable_devices_count()
+{
+	int device_count = 0;
+	const cudaError_t error = cudaGetDeviceCount(&device_count);
+	if(error != cudaSuccess)
+	{
+		printf("There was an error while trying to get device count: %s", cudaGetErrorString(error));
+		return -1;
+	}
+	return device_count;
+}
+
 void device_info::print_devices()
 {
 	int device_count;
@@ -15,7 +27,7 @@ void device_info::print_devices()
 		const cudaError_t error = cudaGetDeviceProperties(&device_prop, device_id);
 		if (error != cudaSuccess)
 		{
-			printf("There was an error while trying to get device properties for device %d", device_id);
+			printf("There was an error while trying to get device properties for device id %d: %s", device_id, cudaGetErrorString(error));
 			return;
 		}
 
