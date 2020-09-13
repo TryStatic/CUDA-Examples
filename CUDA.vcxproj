@@ -83,10 +83,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="device_info.h" />
+    <ClInclude Include="util.h" />
     <ClInclude Include="vector_add.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="device_info.cu" />
+    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

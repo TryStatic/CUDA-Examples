@@ -4,6 +4,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{64e38456-61ec-4d9e-8531-cfd3f82550de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{340d9a77-0cce-4b97-a69e-1d2e249fb688}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="device_info.h">
@@ -12,10 +15,16 @@
     <ClInclude Include="vector_add.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="device_info.cu">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>src\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 #include "device_info.h"
 #include <device_launch_parameters.h>
 #include "vector_add.h"
+#include "util.h"
 
 int main(int argc, char** argv)
 {
@@ -44,7 +45,7 @@ int main(int argc, char** argv)
 			printf("\n\nPress enter to continue...\n");
 			std::cin.ignore();
 			std::cin.get();
-			system("CLS");
+			util::clear_screen();
 		}
 	} while (exit != 0);
 	
