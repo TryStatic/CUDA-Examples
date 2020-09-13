@@ -6,6 +6,14 @@
 #include "cuda_runtime.h"
 #include "vector_add.h"
 
+//Macro for checking cuda errors following a cuda launch or api call
+#define cudaCheckError(R) {                                          \
+ cudaError_t e=cudaGetLastError();                                 \
+ if(e!=cudaSuccess) {                                              \
+   printf("Cuda failure %s:%d: '%s'\n",__FILE__,__LINE__,cudaGetErrorString(e));           \
+   return R; \
+ }                                                                 \
+}
 
 /// <summary>
 /// Vector Add Kernel that executes on device
@@ -24,7 +32,6 @@ __global__ void vector_add_kernel(const float *a, const float *b, float  *c, uns
 
 /// <summary>
 /// Launches the test case
-/// TODO: ERROR HANDLING FOR CUDA
 /// </summary>
 int vector_add::runner()
 {
@@ -34,7 +41,6 @@ int vector_add::runner()
 	// Definitions
 	printf("Initizialing definitions\n");
 
-	cudaError_t cuda_error; // cuda_error_handling
 	const unsigned int no_of_elements = 128000000; // amount of total elements in vectors
 	const size_t size = no_of_elements * sizeof(float); // required size
 	const int threads_per_block = 512; // threads per block
@@ -68,12 +74,12 @@ int vector_add::runner()
 	// Declare and allocate memory on DEVICE
 	printf("Allocating memory on DEVICE\n");
 	float* d_a, * d_b, * d_c;
-	cuda_error = cudaMalloc(reinterpret_cast<void**>(&d_a), size);
-	if (cuda_error != cudaSuccess) return -2;
-	cuda_error = cudaMalloc(reinterpret_cast<void**>(&d_b), size);
-	if (cuda_error != cudaSuccess) return -2;
-	cuda_error = cudaMalloc(reinterpret_cast<void**>(&d_c), size);
-	if (cuda_error != cudaSuccess) return -2;
+	cudaMalloc(reinterpret_cast<void**>(&d_a), size);
+	cudaCheckError(-2);
+	cudaMalloc(reinterpret_cast<void**>(&d_b), size);
+	cudaCheckError(-2);
+	cudaMalloc(reinterpret_cast<void**>(&d_c), size);
+	cudaCheckError(-2);
 	printf("DONE\n\n");
 	// -------------------------------------
 
@@ -93,14 +99,14 @@ int vector_add::runner()
 	// -------------------------------------
 	// Copy HOST Input vectors to device
 	printf("COPYING input data from HOST to DEVICE\n");
-	cuda_error = cudaEventRecord(memcpy_to_start);
-	if (cuda_error != cudaSuccess) return -3;
-	cuda_error = cudaMemcpy(d_a, h_a, size, cudaMemcpyHostToDevice);
-	if (cuda_error != cudaSuccess) return -3;
-	cuda_error = cudaMemcpy(d_b, h_b, size, cudaMemcpyHostToDevice);
-	if (cuda_error != cudaSuccess) return -3;
-	cuda_error = cudaEventRecord(memcpy_to_end);
-	if (cuda_error != cudaSuccess) return -3;
+	cudaEventRecord(memcpy_to_start);
+	cudaCheckError(-3);
+	cudaMemcpy(d_a, h_a, size, cudaMemcpyHostToDevice);
+	cudaCheckError(-3);
+	cudaMemcpy(d_b, h_b, size, cudaMemcpyHostToDevice);
+	cudaCheckError(-3);
+	cudaEventRecord(memcpy_to_end);
+	cudaCheckError(-3);
 	printf("DONE\n\n");
 	// -------------------------------------
 
@@ -108,15 +114,15 @@ int vector_add::runner()
 	// -------------------------------------
 	// Kernel Launch
 	printf("LAUNCHING Kernel\n");
-	cuda_error = cudaEventRecord(kernel_start);
-	if (cuda_error != cudaSuccess) return -4;
-	cuda_error = vector_add_kernel << <blocks, threads_per_block >> > (d_a, d_b, d_c, no_of_elements);
-	if (cuda_error != cudaSuccess) return -4;
+	cudaEventRecord(kernel_start);
+	cudaCheckError(-4);
+	vector_add_kernel << <blocks, threads_per_block >> > (d_a, d_b, d_c, no_of_elements);
+	cudaCheckError(-4);
 	printf("WAITING for kernel to finish execution\n");
-	cuda_error = cudaDeviceSynchronize(); // BARRIER - Wait for kernel to finish execution
-	if (cuda_error != cudaSuccess) return -4;
-	cuda_error = cudaEventRecord(kernel_end);
-	if (cuda_error != cudaSuccess) return -4;
+	cudaDeviceSynchronize(); // BARRIER - Wait for kernel to finish execution
+	cudaCheckError(-4);
+	cudaEventRecord(kernel_end);
+	cudaCheckError(-4);
 	printf("KERNEL finished executing\n");
 	// -------------------------------------
 
@@ -124,12 +130,12 @@ int vector_add::runner()
 	// -------------------------------------
 	// Copy results back to HOST
 	printf("COPYING result data from DEVICE to HOST\n");
-	cuda_error = cudaEventRecord(memcpy_from_start);
-	if (cuda_error != cudaSuccess) return -5;
-	cuda_error = cudaMemcpy(h_c, d_c, size, cudaMemcpyDeviceToHost);
-	if (cuda_error != cudaSuccess) return -5;
-	cuda_error = cudaEventRecord(memcpy_from_end);
-	if (cuda_error != cudaSuccess) return -5;
+	cudaEventRecord(memcpy_from_start);
+	cudaCheckError(-5);
+	cudaMemcpy(h_c, d_c, size, cudaMemcpyDeviceToHost);
+	cudaCheckError(-5);
+	cudaEventRecord(memcpy_from_end);
+	cudaCheckError(-5);
 	printf("DONE\n\n");
 	// -------------------------------------
 
@@ -147,14 +153,17 @@ int vector_add::runner()
 	// -------------------------------------
 	// Time events
 	cudaEventElapsedTime(&ms, memcpy_to_start, memcpy_to_end);
+	cudaCheckError(-6);
 	total_ms += ms;
 	printf("Memcpy from HOST to DEVICE time: %f sec\n", ms / 1000.0);
 
 	cudaEventElapsedTime(&ms, kernel_start, kernel_end);
+	cudaCheckError(-6);
 	total_ms += ms;
 	printf("KERNEL execution time: %f sec\n", ms / 1000.0);
 	
 	cudaEventElapsedTime(&ms, memcpy_from_start, memcpy_from_end);
+	cudaCheckError(-6);
 	total_ms += ms;
 	printf("Memcpy from DEVICE to HOST time: %f sec\n\n", ms / 1000.0);
 	
@@ -164,8 +173,11 @@ int vector_add::runner()
 	// -------------------------------------
 	// Free memory
 	cudaFree(d_a);
+	cudaCheckError(-7);
 	cudaFree(d_b);
+	cudaCheckError(-7);
 	cudaFree(d_c);
+	cudaCheckError(-7);
 
 	free(h_a);
 	free(h_b);
