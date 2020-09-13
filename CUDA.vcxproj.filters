@@ -6,21 +6,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="main.cu">
-      <Filter>src</Filter>
-    </CudaCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="main.h">
+    <ClInclude Include="device_info.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="device.h">
+    <ClInclude Include="vector_add.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="device.cu">
+    <ClCompile Include="device_info.cu">
       <Filter>src</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="main.cpp">
+      <Filter>src</Filter>
+    </CudaCompile>
+    <CudaCompile Include="vector_add.cu">
+      <Filter>src</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
