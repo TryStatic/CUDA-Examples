@@ -13,11 +13,10 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	device_info::print_devices();
-
 	int exit = 0;
 	do
 	{
+		device_info::print_devices();
 		printf("\n\n\n");
 		printf("---------------MENU---------------\n");
 		printf("\tRun vector addition: 1\n");
@@ -38,6 +37,14 @@ int main(int argc, char** argv)
 				break;
 			default:
 				printf("Invalid selection.\n");
+		}
+
+		if (exit != 0)
+		{
+			printf("\n\nPress enter to continue...\n");
+			std::cin.ignore();
+			std::cin.get();
+			system("CLS");
 		}
 	} while (exit != 0);
 	

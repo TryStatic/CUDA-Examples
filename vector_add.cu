@@ -35,6 +35,7 @@ __global__ void vector_add_kernel(const float *a, const float *b, float  *c, uns
 /// </summary>
 int vector_add::runner()
 {
+	system("CLS");
 	printf("\n\n\n[VECTOR_ADD]: STARTING vector_add example.\n");
 	
 	// -------------------------------------
@@ -146,7 +147,7 @@ int vector_add::runner()
 	{
 		printf("%0.2f ", h_c[i]);
 	}
-	printf("\n\n");
+	printf("...\n\n");
 	// -------------------------------------
 
 
